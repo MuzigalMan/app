@@ -1,12 +1,11 @@
 import streamlit as st
-import pymysql
 import pandas as pd
 from sqlalchemy import create_engine
 from datetime import datetime as dt
 
 
 try:
-    connection = create_engine("mysql+pymysql://doadmin:jujcgqi2qtufrq3z@muzigal-prod-report-do-user-7549922-0.b.db.ondigitalocean.com:25060/muzigal_prod")
+    connection = create_engine("mysql+pymysql://doadmin:jujcgqi2qtufrq3z@muzigal-prod-do-user-7549922-0.a.db.ondigitalocean.com:25060/muzigal_prod")
 except Exception as e:
     print('error has occured')
 
