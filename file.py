@@ -65,7 +65,7 @@ elif select == 'Refund':
     
     note = f'Original order: {bamount}; Refund amount: {refund}'
     
-    query = f"UPDATE muzigal_prod.orders SET session_qty = {classes}, amount = {refund}, notes = '{note}', refund_amount = {refund}, refund_date = {dt.now()} WHERE (id = {id})"
+    query = f"UPDATE muzigal_prod.orders SET session_qty = {classes}, amount = {refund}, notes = '{note}', refund_amount = {refund}, refund_date = '{dt.now()}' WHERE id = {id};"
     
     
     if submited :
