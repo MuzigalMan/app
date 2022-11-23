@@ -6,7 +6,7 @@ from datetime import datetime as dt
 
 
 try:
-    connection = create_engine("mysql+pymysql://doadmin:z1uhlsyqhmcxpnsc@mz-db-dev-do-user-7549922-0.b.db.ondigitalocean.com:25060/muzigal_prod")
+    connection = create_engine("mysql+pymysql://doadmin:jujcgqi2qtufrq3z@muzigal-prod-report-do-user-7549922-0.b.db.ondigitalocean.com:25060/muzigal_prod")
 except Exception as e:
     print('error has occured')
 
@@ -65,7 +65,7 @@ elif select == 'Refund':
     
     note = f'Original order: {bamount}; Refund amount: {refund}'
     
-    query = f"UPDATE muzigal_prod.orders SET session_qty = {classes}, amount = {refund}, notes = '{note}', refund_amount = {refund}, refund_date = '{dt.now()}' WHERE id = {id};"
+    query = f"UPDATE muzigal_prod.orders SET session_qty = {classes}, amount = {refund}, notes = '{note}', refund_amount = {ramount}, refund_date = '{dt.now()}' WHERE id = {id};"
     
     
     if submited :
