@@ -20,9 +20,11 @@ if select == 'Add/Reduce Classes':
     
     classes = st.number_input("Enter Classes")
     classes = int(classes)
-        
+    
     amount = st.number_input("Amount")
     amount = int(amount)
+    
+    payment_id = st.text_input("Payment Id")
     
     submited =  st.button("Make Changes")
         
@@ -30,7 +32,7 @@ if select == 'Add/Reduce Classes':
         
         if order and classes and amount is not None:
             
-            orders_query = f"SELECT * FROM orders WHERE id = {id};"
+            orders_query = f"SELECT * FROM orders WHERE id = {order};"
     
             orders = pd.read_sql_query(orders_query,connection)
             
@@ -42,7 +44,7 @@ if select == 'Add/Reduce Classes':
             
             final_amount = orders['amount']+new_amount
         
-            query = f"UPDATE muzigal_prod.orders SET  session_qty = {new_classes}, amount = {final_amount} WHERE id = {order};"
+            query = f"UPDATE muzigal_prod.orders SET  session_qty = {new_classes}, amount = {final_amount}, razorpay_payment_id = {payment_id} WHERE id = {order};"
             
             try:
                 connection.execute(query)
