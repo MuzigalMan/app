@@ -30,7 +30,7 @@ if select == 'Add Classes':
         
     if submited:
         
-        if id and classes is not None:
+        if id and classes is not None and amount or payment_id is None:
             
             orders_query = f"SELECT * FROM orders WHERE id = {id};"
     
