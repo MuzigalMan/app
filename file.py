@@ -23,6 +23,8 @@ if select == 'Add/Reduce Classes':
     classes = st.text_input("Enter Classes")
     if classes is None:
         st.write("Please Enter Values")
+        
+    amount = st.text_input("Amount")
     
     submited =  st.button("Make Changes")
         
