@@ -30,24 +30,26 @@ if select == 'Add Classes':
         
     if submited:
         
-        if id and classes is not None and amount or payment_id is None:
+        if id and classes is not None:
             
-            orders_query = f"SELECT * FROM orders WHERE id = {id};"
-    
-            orders = pd.read_sql_query(orders_query,connection)
+            if  amount or payment_id is None:
             
-            total_classes = int( orders['session_qty'])
-            
-            new_classes = total_classes+classes
+                orders_query = f"SELECT * FROM orders WHERE id = {id};"
         
-            query = f"UPDATE muzigal_prod.orders SET  session_qty = {new_classes}, amount = {amount}, razorpay_payment_id = '{payment_id}' WHERE id = {id};"
+                orders = pd.read_sql_query(orders_query,connection)
+                
+                total_classes = int( orders['session_qty'])
+                
+                new_classes = total_classes+classes
             
-            try:
-                connection.execute(query)
-            except Exception as e:
-                print(f"Error has occured:{e}")
-            finally:
-                st.write("Changes Done!")
+                query = f"UPDATE muzigal_prod.orders SET  session_qty = {new_classes}, amount = {amount}, razorpay_payment_id = '{payment_id}' WHERE id = {id};"
+                
+                try:
+                    connection.execute(query)
+                except Exception as e:
+                    print(f"Error has occured:{e}")
+                finally:
+                    st.write("Changes Done!")
                 
         elif amount or payment_id is None:
             
