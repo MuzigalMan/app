@@ -13,6 +13,8 @@ orders_query = f"SELECT * FROM orders WHERE id = 121456;"
 
 orders = pd.read_sql_query(orders_query,connection)
 
+id = 121456
+
 classes = 4
 
 total_classes = int(orders['session_qty'])
@@ -21,8 +23,13 @@ new_classes = total_classes+classes
 
 amount = 0
 
-payment_id = None
+payment_id = "Null"
 
 query = f"UPDATE muzigal_prod.orders SET  session_qty = {new_classes}, amount = {amount}, razorpay_payment_id = {payment_id} WHERE id = {id};"
 
-print(query)
+try:
+    connection.execute(query)
+except Exception as e:
+    print(f"Error has occured:{e}")
+finally:
+    print("Changes Done!")

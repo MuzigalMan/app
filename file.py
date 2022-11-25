@@ -30,7 +30,7 @@ if select == 'Add Classes':
         
     if submited:
         
-        if id and classes is not None:
+        if id and classes and amount and payment_id is not None:
             
             orders_query = f"SELECT * FROM orders WHERE id = {id};"
     
@@ -39,6 +39,29 @@ if select == 'Add Classes':
             total_classes = int( orders['session_qty'])
             
             new_classes = total_classes+classes
+        
+            query = f"UPDATE muzigal_prod.orders SET  session_qty = {new_classes}, amount = {amount}, razorpay_payment_id = {payment_id} WHERE id = {id};"
+            
+            try:
+                connection.execute(query)
+            except Exception as e:
+                print(f"Error has occured:{e}")
+            finally:
+                st.write("Changes Done!")
+                
+        elif amount or payment_id is None:
+            
+            orders_query = f"SELECT * FROM orders WHERE id = {id};"
+    
+            orders = pd.read_sql_query(orders_query,connection)
+            
+            total_classes = int( orders['session_qty'])
+            
+            new_classes = total_classes+classes
+            
+            amount = int(orders['amount'])
+            
+            payment_id = str(orders['razorpay_payment_id'])
         
             query = f"UPDATE muzigal_prod.orders SET  session_qty = {new_classes}, amount = {amount}, razorpay_payment_id = {payment_id} WHERE id = {id};"
             
@@ -96,7 +119,7 @@ elif select == 'Refund':
             
             total_classes = int( orders['session_qty'])
 
-            amount = orders['amount']
+            amount = int(orders['amount'])
             
             classes_query = f"SELECT count(*) as cc FROM muzigal_prod.class_schedule where order_id = {id};"
 
