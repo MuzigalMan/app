@@ -5,14 +5,14 @@ from datetime import datetime as dt
 
 
 try:
-    connection = create_engine("mysql+pymysql://doadmin:jujcgqi2qtufrq3z@muzigal-prod-do-user-7549922-0.a.db.ondigitalocean.com:25060/muzigal_prod")
+    connection = create_engine("mysql+pymysql://doadmin:z1uhlsyqhmcxpnsc@mz-db-dev-do-user-7549922-0.b.db.ondigitalocean.com:25060/muzigal_prod")
 except Exception as e:
     print('error has occured')
 
 
-select = st.selectbox('What would you like to be performed?',
-    ('Add/Reduce Classes', 'Refund'))
-
+select = st.selectbox('What would you like to perform?',
+    ('Select','Add/Reduce Classes', 'Refund'))
+ 
 
 if select == 'Add/Reduce Classes':
     
@@ -37,40 +37,47 @@ if select == 'Add/Reduce Classes':
         finally:
             st.write("Changes Done!")
     
-        
 elif select == 'Refund':
-        
+    
     id = st.text_input("Order ID")
-    if id is None:
-        st.write("Please Enter Values")
+        
+    refund_amount = st.text_input("Refund Amount")
     
-    classes = st.text_input("Enter Classes")
-    if classes is None:
-        st.write("Please Enter Values")
-
-    bamount = st.number_input("Total Amount")
-    bamount = int(bamount)
-    if bamount is None:
-        st.write("Please Enter Values")
-
-    ramount = st.number_input("Refund Amount")
-    ramount = int(ramount)
-    if ramount is None:
-        st.write("Please Enter Values")
-    
+    notes = st.text_input("Note")
+        
     submited = st.button("Make Changes")
+    
+    if submited:
+        
+        if id and refund_amount is not None:
+            
+            orders_query = f"SELECT * FROM orders WHERE id = {id};"
+    
+            orders = pd.read_sql_query(orders_query,connection)
+            
+            total_classes = orders['session_qty']
 
-    refund = bamount - ramount
-    
-    note = f'Original order: {bamount}; Refund amount: {refund}'
-    
-    query = f"UPDATE muzigal_prod.orders SET session_qty = {classes}, amount = {refund}, notes = '{note}', refund_amount = {ramount}, refund_date = '{dt.now()}' WHERE id = {id};"
-    
-    
-    if submited :
-        try:
-            connection.execute(query)
-        except Exception as e:
-            print(f"Error has occured:{e}")
-        finally:
-            st.markdown("Changes Done!")
+            amount = orders['amount']
+            
+            classes_query = f"SELECT count(*) as cc FROM muzigal_prod.class_schedule where order_id = {id};"
+
+            classes = pd.read_sql_query(classes_query,connection)
+
+            completed_classes = classes['cc']
+
+            new_amount = amount-refund_amount
+            
+            note = f'Original order: {amount}; Refund amount: {refund_amount} | {notes}'
+            
+            query = f"UPDATE muzigal_prod.orders SET session_qty = {completed_classes}, amount = {new_amount}, notes = '{note}', refund_amount = {refund_amount}, refund_date = '{dt.now()}' WHERE id = {id};"
+            
+            
+            try:
+                connection.execute(query)
+            except Exception as e:
+                print(f"Error has occured:{e}")
+            finally:
+                st.markdown("Changes Done!")
+                
+    else:
+        st.write("Please Enter Values")
