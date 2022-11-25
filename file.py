@@ -40,7 +40,7 @@ if select == 'Add Classes':
             
             new_classes = total_classes+classes
         
-            query = f"UPDATE muzigal_prod.orders SET  session_qty = {new_classes}, amount = {amount}, razorpay_payment_id = {payment_id} WHERE id = {id};"
+            query = f"UPDATE muzigal_prod.orders SET  session_qty = {new_classes}, amount = {amount}, razorpay_payment_id = '{payment_id}' WHERE id = {id};"
             
             try:
                 connection.execute(query)
@@ -63,7 +63,7 @@ if select == 'Add Classes':
             
             payment_id = str(orders['razorpay_payment_id'])
         
-            query = f"UPDATE muzigal_prod.orders SET  session_qty = {new_classes}, amount = {amount}, razorpay_payment_id = {payment_id} WHERE id = {id};"
+            query = f"UPDATE muzigal_prod.orders SET  session_qty = {new_classes}, amount = {amount}, razorpay_payment_id = '{payment_id}' WHERE id = {id};"
             
             try:
                 connection.execute(query)

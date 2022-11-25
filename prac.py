@@ -23,13 +23,32 @@ new_classes = total_classes+classes
 
 amount = 0
 
-payment_id = "Null"
+payment_id = str(orders['razorpay_payment_id'])
 
-query = f"UPDATE muzigal_prod.orders SET  session_qty = {new_classes}, amount = {amount}, razorpay_payment_id = {payment_id} WHERE id = {id};"
+if id and classes is not None:
 
-try:
-    connection.execute(query)
-except Exception as e:
-    print(f"Error has occured:{e}")
-finally:
-    print("Changes Done!")
+    query = f"UPDATE muzigal_prod.orders SET  session_qty = {new_classes}, amount = {amount}, razorpay_payment_id = '{payment_id}' WHERE id = {id};"
+
+    try:
+        connection.execute(query)
+    except Exception as e:
+        print(f"Error has occured:{e}")
+        
+    finally:
+        print("Changes Done!")
+        
+elif amount or payment_id is None:
+    
+    amount = int(orders['amount'])
+            
+    payment_id = str(orders['razorpay_payment_id'])
+    
+    query = f"UPDATE muzigal_prod.orders SET  session_qty = {new_classes}, amount = {amount}, razorpay_payment_id = '{payment_id}' WHERE id = {id};"
+
+    try:
+        connection.execute(query)
+    except Exception as e:
+        print(f"Error has occured:{e}")
+        
+    finally:
+        print("Changes!")
