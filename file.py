@@ -40,7 +40,9 @@ if select == 'Add Classes':
             
             new_classes = total_classes+classes
             
-            new_amount = amount+int(orders['amount'])
+            table_amount = int(orders['amount'])
+            
+            new_amount = amount+table_amount
         
             query = f"UPDATE muzigal_prod.orders SET  session_qty = {new_classes}, amount = {new_amount}, razorpay_payment_id = '{payment_id}' WHERE id = {id};"
             
