@@ -32,7 +32,7 @@ if select == 'Add Classes':
         
         if id and classes is not None:
             
-            if  amount or payment_id is None:
+            if  amount or payment_id is not None:
             
                 orders_query = f"SELECT * FROM orders WHERE id = {id};"
         
@@ -50,29 +50,29 @@ if select == 'Add Classes':
                     print(f"Error has occured:{e}")
                 finally:
                     st.write("Changes Done!")
+                    
+            elif amount or payment_id is None:
                 
-        elif amount or payment_id is None:
-            
-            orders_query = f"SELECT * FROM orders WHERE id = {id};"
-    
-            orders = pd.read_sql_query(orders_query,connection)
-            
-            total_classes = int( orders['session_qty'])
-            
-            new_classes = total_classes+classes
-            
-            table_amount = int(orders['amount'])
-            
-            table_payment_id = str(orders['razorpay_payment_id'])
+                orders_query = f"SELECT * FROM orders WHERE id = {id};"
         
-            query = f"UPDATE muzigal_prod.orders SET  session_qty = {new_classes}, amount = {table_amount}, razorpay_payment_id = '{table_payment_id}' WHERE id = {id};"
+                orders = pd.read_sql_query(orders_query,connection)
+                
+                total_classes = int( orders['session_qty'])
+                
+                new_classes = total_classes+classes
+                
+                table_amount = int(orders['amount'])
+                
+                table_payment_id = str(orders['razorpay_payment_id'])
             
-            try:
-                connection.execute(query)
-            except Exception as e:
-                print(f"Error has occured:{e}")
-            finally:
-                st.write("Changes Done!")
+                query = f"UPDATE muzigal_prod.orders SET  session_qty = {new_classes}, amount = {table_amount}, razorpay_payment_id = '{table_payment_id}' WHERE id = {id};"
+                
+                try:
+                    connection.execute(query)
+                except Exception as e:
+                    print(f"Error has occured:{e}")
+                finally:
+                    st.write("Changes Done!")
         
         else:
             st.write("Enter Values")
