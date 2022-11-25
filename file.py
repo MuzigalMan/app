@@ -5,7 +5,7 @@ from datetime import datetime as dt
 
 
 try:
-    connection = create_engine("mysql+pymysql://doadmin:z1uhlsyqhmcxpnsc@mz-db-dev-do-user-7549922-0.b.db.ondigitalocean.com:25060/muzigal_prod")
+    connection = create_engine("mysql+pymysql://doadmin:jujcgqi2qtufrq3z@muzigal-prod-do-user-7549922-0.a.db.ondigitalocean.com:25060/muzigal_prod")
 except Exception as e:
     print('error has occured')
 
