@@ -17,27 +17,39 @@ select = st.selectbox('What would you like to perform?',
 if select == 'Add/Reduce Classes':
     
     order = st.text_input("Order ID")
-    if order is None:
-        st.write("Please Enter Values")
     
-    classes = st.text_input("Enter Classes")
-    if classes is None:
-        st.write("Please Enter Values")
+    classes = st.number_input("Enter Classes")
+    classes = int(classes)
         
-    amount = st.text_input("Amount")
+    amount = st.number_input("Amount")
+    amount = int(amount)
     
     submited =  st.button("Make Changes")
         
     if submited:
         
-        query = f"UPDATE muzigal_prod.orders SET  session_qty = {classes}  WHERE id = {order};"
+        if order and classes and amount is not None:
+            
+            orders_query = f"SELECT * FROM orders WHERE id = {id};"
+    
+            orders = pd.read_sql_query(orders_query,connection)
+            
+            total_classes = orders['session_qty']
+            
+            new_classes = total_classes+classes
+            
+            new_amount = classes*amount
+            
+            final_amount = orders['amount']+new_amount
         
-        try:
-            connection.execute(query)
-        except Exception as e:
-            print(f"Error has occured:{e}")
-        finally:
-            st.write("Changes Done!")
+            query = f"UPDATE muzigal_prod.orders SET  session_qty = {new_classes}, amount = {final_amount} WHERE id = {order};"
+            
+            try:
+                connection.execute(query)
+            except Exception as e:
+                print(f"Error has occured:{e}")
+            finally:
+                st.write("Changes Done!")
     
 elif select == 'Refund':
     
