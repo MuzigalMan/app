@@ -11,12 +11,12 @@ except Exception as e:
 
 
 select = st.selectbox('What would you like to perform?',
-    ('Select','Add Classes', 'Refund'))
+    ('Select','Add Classes', 'Reduce Classes', 'Refund'))
  
 
 if select == 'Add Classes':
     
-    order = st.text_input("Order ID")
+    id = st.text_input("Order ID")
     
     classes = st.number_input("Enter Classes")
     classes = int(classes)
@@ -40,7 +40,7 @@ if select == 'Add Classes':
             
             new_classes = total_classes+classes
         
-            query = f"UPDATE muzigal_prod.orders SET  session_qty = {new_classes}, amount = {amount}, razorpay_payment_id = {payment_id} WHERE id = {order};"
+            query = f"UPDATE muzigal_prod.orders SET  session_qty = {new_classes}, amount = {amount}, razorpay_payment_id = {payment_id} WHERE id = {id};"
             
             try:
                 connection.execute(query)
@@ -48,6 +48,33 @@ if select == 'Add Classes':
                 print(f"Error has occured:{e}")
             finally:
                 st.write("Changes Done!")
+        
+        else:
+            st.write("Enter Values")
+                
+elif select == 'Reduce Classes':
+    
+    id = st.text_input("Order Id")
+    
+    classes = st.text_input("Classes")
+    
+    submited = st.button("Make Changes")
+    
+    if submited:
+        
+        if id and classes is not None:
+            
+            query = f"UPDATE muzigal_prod.orders SET  session_qty = {classes} WHERE id = {id};"
+            
+            try:
+                connection.execute(query)
+            except Exception as e:
+                print(f"Error has occured:{e}")
+            finally:
+                st.write("Changes Done!")
+        
+        else:
+            st.write("Enter Values")
     
 elif select == 'Refund':
     
