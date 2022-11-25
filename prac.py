@@ -9,22 +9,20 @@ try:
 except Exception as e:
     print('error has occured')
     
-orders_query = f"SELECT * FROM orders WHERE id = 4;"
+orders_query = f"SELECT * FROM orders WHERE id = 121456;"
 
 orders = pd.read_sql_query(orders_query,connection)
 
-total_classes = orders['session_qty']
+classes = 4
 
-amount = orders['amount']
+total_classes = int(orders['session_qty'])
+            
+new_classes = total_classes+classes
 
-per_class_amount = round(orders['amount']//orders['session_qty'],0)
+amount = 0
 
-classes_query = f"SELECT count(*) as cc FROM muzigal_prod.class_schedule where order_id = 4;"
+payment_id = None
 
-classes = pd.read_sql_query(classes_query,connection)
+query = f"UPDATE muzigal_prod.orders SET  session_qty = {new_classes}, amount = {amount}, razorpay_payment_id = {payment_id} WHERE id = {id};"
 
-completed_classes = classes['cc']
-
-refund_amount = (total_classes-completed_classes)*per_class_amount
-
-new_amount = amount-refund_amount
+print(query)

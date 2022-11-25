@@ -36,7 +36,7 @@ if select == 'Add Classes':
     
             orders = pd.read_sql_query(orders_query,connection)
             
-            total_classes = orders['session_qty']
+            total_classes = int( orders['session_qty'])
             
             new_classes = total_classes+classes
         
@@ -94,7 +94,7 @@ elif select == 'Refund':
     
             orders = pd.read_sql_query(orders_query,connection)
             
-            total_classes = orders['session_qty']
+            total_classes = int( orders['session_qty'])
 
             amount = orders['amount']
             
@@ -102,7 +102,7 @@ elif select == 'Refund':
 
             classes = pd.read_sql_query(classes_query,connection)
 
-            completed_classes = classes['cc']
+            completed_classes = int(classes['cc'])
 
             new_amount = amount-refund_amount
             
