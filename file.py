@@ -30,9 +30,9 @@ if select == 'Add Classes':
         
     if submited:
         
-        if order and classes is not None:
+        if id and classes is not None:
             
-            orders_query = f"SELECT * FROM orders WHERE id = {order};"
+            orders_query = f"SELECT * FROM orders WHERE id = {id};"
     
             orders = pd.read_sql_query(orders_query,connection)
             
