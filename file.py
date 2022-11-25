@@ -74,8 +74,8 @@ if select == 'Add Classes':
                 finally:
                     st.write("Changes Done!")
         
-        else:
-            st.write("Enter Values")
+            else:
+                st.write("Enter Values")
                 
 elif select == 'Reduce Classes':
     
