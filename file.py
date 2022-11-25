@@ -103,7 +103,8 @@ elif select == 'Refund':
     
     id = st.text_input("Order ID")
         
-    refund_amount = st.text_input("Refund Amount")
+    refund_amount = st.number_input("Refund Amount")
+    refund_amount = int(refund_amount)
     
     notes = st.text_input("Note")
         
