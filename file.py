@@ -14,7 +14,7 @@ select = st.selectbox('What would you like to perform?',
     ('Select','Add Classes', 'Refund'))
  
 
-if select == 'Add/Reduce Classes':
+if select == 'Add Classes':
     
     order = st.text_input("Order ID")
     
