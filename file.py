@@ -32,49 +32,26 @@ if select == 'Add Classes':
         
         if id and classes is not None:
             
-            if  amount or payment_id is not None:
+            orders_query = f"SELECT * FROM orders WHERE id = {id};"
+    
+            orders = pd.read_sql_query(orders_query,connection)
             
-                orders_query = f"SELECT * FROM orders WHERE id = {id};"
-        
-                orders = pd.read_sql_query(orders_query,connection)
-                
-                total_classes = int( orders['session_qty'])
-                
-                new_classes = total_classes+classes
+            total_classes = int( orders['session_qty'])
             
-                query = f"UPDATE muzigal_prod.orders SET  session_qty = {new_classes}, amount = {amount}, razorpay_payment_id = '{payment_id}' WHERE id = {id};"
-                
-                try:
-                    connection.execute(query)
-                except Exception as e:
-                    print(f"Error has occured:{e}")
-                finally:
-                    st.write("Changes Done!")
-                    
-            elif amount or payment_id is None:
-                
-                orders_query = f"SELECT * FROM orders WHERE id = {id};"
-        
-                orders = pd.read_sql_query(orders_query,connection)
-                
-                total_classes = int( orders['session_qty'])
-                
-                new_classes = total_classes+classes
-                
-                table_amount = int(orders['amount'])
-                
-                table_payment_id = str(orders['razorpay_payment_id'])
+            new_classes = total_classes+classes
             
-                query = f"UPDATE muzigal_prod.orders SET  session_qty = {new_classes}, amount = {table_amount}, razorpay_payment_id = '{table_payment_id}' WHERE id = {id};"
-                
-                try:
-                    connection.execute(query)
-                except Exception as e:
-                    print(f"Error has occured:{e}")
-                finally:
-                    st.write("Changes Done!")
+            new_amount = amount+int(orders['amount'])
         
-            else:
+            query = f"UPDATE muzigal_prod.orders SET  session_qty = {new_classes}, amount = {new_amount}, razorpay_payment_id = '{payment_id}' WHERE id = {id};"
+            
+            try:
+                connection.execute(query)
+            except Exception as e:
+                print(f"Error has occured:{e}")
+            finally:
+                st.write("Changes Done!")
+        
+        else:
                 st.write("Enter Values")
                 
 elif select == 'Reduce Classes':
@@ -132,7 +109,7 @@ elif select == 'Refund':
 
             new_amount = amount-refund_amount
             
-            note = f'Original order: {amount}; Refund amount: {refund_amount} | {notes}'
+            note = f'Original order: {amount}; Refund amount: {refund_amount} | Reason: {notes}'
             
             query = f"UPDATE muzigal_prod.orders SET session_qty = {completed_classes}, amount = {new_amount}, notes = '{note}', refund_amount = {refund_amount}, refund_date = '{dt.now()}' WHERE id = {id};"
             
