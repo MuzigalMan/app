@@ -11,18 +11,12 @@ except Exception as e:
 
 
 select = st.selectbox('What would you like to perform?',
-    ('Select','Add Classes', 'Reduce Classes', 'Refund'))
+    ('Select','Add Classes', 'Custom', 'Refund'))
  
 
 if select == 'Add Classes':
     
     id = st.text_input("Order ID")
-    
-    classes = st.number_input("Enter Classes")
-    classes = int(classes)
-    
-    amount = st.number_input("Amount")
-    amount = int(amount)
     
     payment_id = st.text_input("Payment Id")
     
@@ -30,21 +24,9 @@ if select == 'Add Classes':
         
     if submited:
         
-        if id and classes is not None:
-            
-            orders_query = f"SELECT * FROM orders WHERE id = {id};"
-    
-            orders = pd.read_sql_query(orders_query,connection)
-            
-            total_classes = int( orders['session_qty'])
-            
-            new_classes = total_classes+classes
-            
-            table_amount = int(orders['amount'])
-            
-            new_amount = amount+table_amount
+        if id and payment_id is not None:
         
-            query = f"UPDATE muzigal_prod.orders SET  session_qty = {new_classes}, amount = {new_amount}, razorpay_payment_id = '{payment_id}' WHERE id = {id};"
+            query = f"UPDATE muzigal_prod.orders SET razorpay_payment_id = '{payment_id}' , payment_complete = 1 WHERE id = {id};"
             
             try:
                 connection.execute(query)
@@ -56,72 +38,72 @@ if select == 'Add Classes':
         else:
                 st.write("Enter Values")
                 
-elif select == 'Reduce Classes':
-    
-    id = st.text_input("Order Id")
-    
-    classes = st.text_input("Classes")
-    
-    submited = st.button("Make Changes")
-    
-    if submited:
+    elif select == 'Custom':
         
-        if id and classes is not None:
-            
-            query = f"UPDATE muzigal_prod.orders SET  session_qty = {classes} WHERE id = {id};"
-            
-            try:
-                connection.execute(query)
-            except Exception as e:
-                print(f"Error has occured:{e}")
-            finally:
-                st.write("Changes Done!")
+        id = st.text_input("Order Id")
         
-        else:
-            st.write("Enter Values")
-    
-elif select == 'Refund':
-    
-    id = st.text_input("Order ID")
+        classes = st.text_input("Classes")
         
-    refund_amount = st.number_input("Refund Amount")
-    refund_amount = int(refund_amount)
-    
-    notes = st.text_input("Note")
+        submited = st.button("Make Changes")
         
-    submited = st.button("Make Changes")
-    
-    if submited:
-        
-        if id and refund_amount is not None:
+        if submited:
             
-            orders_query = f"SELECT * FROM orders WHERE id = {id};"
-    
-            orders = pd.read_sql_query(orders_query,connection)
-            
-            total_classes = int( orders['session_qty'])
-
-            amount = int(orders['amount'])
-            
-            classes_query = f"SELECT count(*) as cc FROM muzigal_prod.class_schedule where order_id = {id};"
-
-            classes = pd.read_sql_query(classes_query,connection)
-
-            completed_classes = int(classes['cc'])
-
-            new_amount = amount-refund_amount
-            
-            note = f'Original order: {amount}; Refund amount: {refund_amount} | Reason: {notes}'
-            
-            query = f"UPDATE muzigal_prod.orders SET session_qty = {completed_classes}, amount = {new_amount}, notes = '{note}', refund_amount = {refund_amount}, refund_date = '{dt.now()}' WHERE id = {id};"
-            
-            
-            try:
-                connection.execute(query)
-            except Exception as e:
-                print(f"Error has occured:{e}")
-            finally:
-                st.markdown("Changes Done!")
+            if id and classes is not None:
                 
-    else:
-        st.write("Please Enter Values")
+                query = f"UPDATE muzigal_prod.orders SET  session_qty = {classes} WHERE id = {id};"
+                
+                try:
+                    connection.execute(query)
+                except Exception as e:
+                    print(f"Error has occured:{e}")
+                finally:
+                    st.write("Changes Done!")
+            
+            else:
+                st.write("Enter Values")
+        
+    elif select == 'Refund':
+        
+        id = st.text_input("Order ID")
+            
+        refund_amount = st.number_input("Refund Amount")
+        refund_amount = int(refund_amount)
+        
+        notes = st.text_input("Note")
+            
+        submited = st.button("Make Changes")
+        
+        if submited:
+            
+            if id and refund_amount is not None:
+                
+                orders_query = f"SELECT * FROM orders WHERE id = {id};"
+        
+                orders = pd.read_sql_query(orders_query,connection)
+                
+                total_classes = int( orders['session_qty'])
+
+                amount = int(orders['amount'])
+                
+                classes_query = f"SELECT count(*) as cc FROM muzigal_prod.class_schedule where order_id = {id};"
+
+                classes = pd.read_sql_query(classes_query,connection)
+
+                completed_classes = int(classes['cc'])
+
+                new_amount = amount-refund_amount
+                
+                note = f'Original order: {amount}; Refund amount: {refund_amount} | Reason: {notes}'
+                
+                query = f"UPDATE muzigal_prod.orders SET session_qty = {completed_classes}, amount = {new_amount}, notes = '{note}', refund_amount = {refund_amount}, refund_date = '{dt.now()}' WHERE id = {id};"
+                
+                
+                try:
+                    connection.execute(query)
+                except Exception as e:
+                    print(f"Error has occured:{e}")
+                finally:
+                    st.markdown("Changes Done!")
+                    
+        else:
+            st.write("Please Enter Values")
