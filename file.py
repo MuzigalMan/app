@@ -11,7 +11,7 @@ except Exception as e:
 
 
 select = st.selectbox('What would you like to perform?',
-    ('Select','Add Classes', 'Custom', 'Refund'))
+    ('Select','Add Classes', 'Custom', 'Refund', 'Data Transfer (Beta)'))
  
 
 if select == 'Add Classes':
@@ -38,72 +38,76 @@ if select == 'Add Classes':
         else:
                 st.write("Enter Values")
                 
-    elif select == 'Custom':
+elif select == 'Custom':
+    
+    id = st.text_input("Order Id")
+    
+    classes = st.text_input("Classes")
+    
+    submited = st.button("Make Changes")
+    
+    if submited:
         
-        id = st.text_input("Order Id")
-        
-        classes = st.text_input("Classes")
-        
-        submited = st.button("Make Changes")
-        
-        if submited:
+        if id and classes is not None:
             
-            if id and classes is not None:
-                
-                query = f"UPDATE muzigal_prod.orders SET  session_qty = {classes} WHERE id = {id};"
-                
-                try:
-                    connection.execute(query)
-                except Exception as e:
-                    print(f"Error has occured:{e}")
-                finally:
-                    st.write("Changes Done!")
+            query = f"UPDATE muzigal_prod.orders SET  session_qty = {classes} WHERE id = {id};"
             
-            else:
-                st.write("Enter Values")
+            try:
+                connection.execute(query)
+            except Exception as e:
+                print(f"Error has occured:{e}")
+            finally:
+                st.write("Changes Done!")
         
-    elif select == 'Refund':
-        
-        id = st.text_input("Order ID")
-            
-        refund_amount = st.number_input("Refund Amount")
-        refund_amount = int(refund_amount)
-        
-        notes = st.text_input("Note")
-            
-        submited = st.button("Make Changes")
-        
-        if submited:
-            
-            if id and refund_amount is not None:
-                
-                orders_query = f"SELECT * FROM orders WHERE id = {id};"
-        
-                orders = pd.read_sql_query(orders_query,connection)
-                
-                total_classes = int( orders['session_qty'])
-
-                amount = int(orders['amount'])
-                
-                classes_query = f"SELECT count(*) as cc FROM muzigal_prod.class_schedule where order_id = {id};"
-
-                classes = pd.read_sql_query(classes_query,connection)
-
-                completed_classes = int(classes['cc'])
-
-                new_amount = amount-refund_amount
-                
-                note = f'Original order: {amount}; Refund amount: {refund_amount} | Reason: {notes}'
-                
-                query = f"UPDATE muzigal_prod.orders SET session_qty = {completed_classes}, amount = {new_amount}, notes = '{note}', refund_amount = {refund_amount}, refund_date = '{dt.now()}' WHERE id = {id};"
-                
-                
-                try:
-                    connection.execute(query)
-                except Exception as e:
-                    print(f"Error has occured:{e}")
-                finally:
-                    st.markdown("Changes Done!")
-                    
         else:
-            st.write("Please Enter Values")
+            st.write("Enter Values")
+    
+elif select == 'Refund':
+    
+    id = st.text_input("Order ID")
+        
+    refund_amount = st.number_input("Refund Amount")
+    refund_amount = int(refund_amount)
+    
+    notes = st.text_input("Note")
+        
+    submited = st.button("Make Changes")
+    
+    if submited:
+        
+        if id and refund_amount is not None:
+            
+            orders_query = f"SELECT * FROM orders WHERE id = {id};"
+    
+            orders = pd.read_sql_query(orders_query,connection)
+            
+            total_classes = int( orders['session_qty'])
+
+            amount = int(orders['amount'])
+            
+            classes_query = f"SELECT count(*) as cc FROM muzigal_prod.class_schedule where order_id = {id};"
+
+            classes = pd.read_sql_query(classes_query,connection)
+
+            completed_classes = int(classes['cc'])
+
+            new_amount = amount-refund_amount
+            
+            note = f'Original order: {amount}; Refund amount: {refund_amount} | Reason: {notes}'
+            
+            query = f"UPDATE muzigal_prod.orders SET session_qty = {completed_classes}, amount = {new_amount}, notes = '{note}', refund_amount = {refund_amount}, refund_date = '{dt.now()}' WHERE id = {id};"
+            
+            
+            try:
+                connection.execute(query)
+            except Exception as e:
+                print(f"Error has occured:{e}")
+            finally:
+                st.markdown("Changes Done!")
+                
+    else:
+        st.write("Please Enter Values")
+        
+elif select == 'Data Transfer':
+    
+    st.markdown('Work in progress')
