@@ -11,7 +11,7 @@ except Exception as e:
 
 
 select = st.selectbox('What would you like to perform?',
-    ('Select','Add Classes', 'Custom', 'Refund', 'Data Transfer (Beta)'))
+    ('Select','Add Classes', 'Custom', 'Refund'))
  
 
 if select == 'Add Classes':
@@ -107,7 +107,3 @@ elif select == 'Refund':
                 
     else:
         st.write("Please Enter Values")
-        
-elif select == 'Data Transfer':
-    
-    print(st.markdown('Coming Soon'))
