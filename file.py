@@ -2,16 +2,19 @@ import streamlit as st
 import pandas as pd
 from sqlalchemy import create_engine
 from datetime import datetime as dt
+from functions import get_ids
 
 
 try:
-    connection = create_engine("mysql+pymysql://doadmin:jujcgqi2qtufrq3z@muzigal-prod-do-user-7549922-0.a.db.ondigitalocean.com:25060/muzigal_prod")
+    connection = create_engine(
+        "mysql+pymysql://doadmin:jujcgqi2qtufrq3z@muzigal-prod-do-user-7549922-0.a.db.ondigitalocean.com:25060/muzigal_prod"
+    )
 except Exception as e:
-    print('error has occured')
+    print("error has occured")
 
 
 select = st.selectbox('What would you like to perform?',
-    ('Select','Add Classes', 'Custom', 'Refund'))
+    ('Select','Add Classes', 'Custom', 'Refund', 'Batch Settelment'))
  
 
 if select == 'Add Classes':
@@ -107,3 +110,74 @@ elif select == 'Refund':
                 
     else:
         st.write("Please Enter Values")
+        
+elif select == 'Batch Settelment':
+    
+    mark_complete_file = st.file_uploader("Upload Mark Complete CSV file", accept_multiple_files=False)
+    
+    add_back_file = st.file_uploader("Upload Add Back CSV File", accept_multiple_files=False)
+    
+    col1, col2 = st.columns([3,3])
+    
+    with col1:
+        batch_start_date = st.date_input("Batch start date", dt.date(dt.now()))
+    
+    with col2:
+        batch_end_date = st.date_input("Batch end date", dt.date(dt.now()))
+    
+    submited =  st.button("Create Batch")
+    
+    if submited:
+        
+        if mark_complete_file and add_back_file and batch_start_date and batch_end_date is not None:
+        
+            mc_ids = get_ids(mark_complete_file)
+            
+            ab_ids = get_ids(add_back_file)
+            
+            class_mark_completion = f"""SET SQL_SAFE_UPDATES = 0;
+                                        update class_schedule
+                                        SET is_complete=1
+                                        WHERE id IN {mc_ids};
+                                        SET SQL_SAFE_UPDATES = 1;
+                                        """
+                                        
+            log_classes_before_deletion = f"""INSERT INTO slot_cancel_log(slot_id,slot_type,student_id,class_id,order_id,reason,created_date)
+                                                SELECT slot_id,1,student_id,id,order_id,'System mark completion with Auto process',NOW() FROM class_schedule
+                                                WHERE id IN {ab_ids};
+                                                """
+                                                
+            delete_incomplete_classes = f"""DELETE FROM class_schedule
+                                            WHERE id {ab_ids};
+                                            """
+                                            
+            create_batch = f"""CALL `muzigal_prod`.`batch_summary_pr`({str(batch_start_date)},{str(batch_end_date)});"""
+            
+            average_report = """SELECT 
+                                SUM(net_amount),
+                                MIN(net_amount),
+                                MAX(net_amount),
+                                AVG(net_amount),
+                                count(case when currency = 'INR' then net_amount end) as INR,
+                                count(case when currency = 'USD' then net_amount end) as US,
+                                COUNT(net_amount) AS total_count
+                            FROM batch_transactions a
+                            INNER JOIN teacher_profile b ON a.teacher_id = b.users_id
+                            WHERE batch_id = (select batch_id from batch_transactions order by id desc limit 1) AND b.zone_id = 1 AND net_amount != 0;
+                            """
+                            
+            queries = [class_mark_completion,log_classes_before_deletion,delete_incomplete_classes,create_batch]
+            
+            for i in range(len(queries)):
+                try:
+                    connection.execute(queries[i])
+                except Exception as e:
+                    print(f"Error has occured:{e}")
+
+            st.markdown(f"Batch Created")
+                    
+            show_report = pd.read_sql_query(average_report,connection)
+            
+            st.table(show_report)
+        else:
+                st.write("Enter Values")
