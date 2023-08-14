@@ -111,7 +111,7 @@ elif select == 'Refund':
     else:
         st.write("Please Enter Values")
         
-elif select == 'Batch Settelment':
+elif select == 'Batch Settlement':
     
     mark_complete_file = st.file_uploader("Upload Mark Complete CSV file", accept_multiple_files=False)
     
