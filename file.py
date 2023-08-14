@@ -14,7 +14,7 @@ except Exception as e:
 
 
 select = st.selectbox('What would you like to perform?',
-    ('Select','Add Classes', 'Custom', 'Refund', 'Batch Settelment'))
+    ('Select','Add Classes', 'Custom', 'Refund', 'Batch Settlement'))
  
 
 if select == 'Add Classes':
