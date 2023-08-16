@@ -148,10 +148,10 @@ elif select == 'Batch Settlement':
                                                 """
                                                 
             delete_incomplete_classes = f"""DELETE FROM class_schedule
-                                            WHERE id {ab_ids};
+                                            WHERE id IN {ab_ids};
                                             """
                                             
-            create_batch = f"""CALL `muzigal_prod`.`batch_summary_pr`({str(batch_start_date)},{str(batch_end_date)});"""
+            create_batch = f"""CALL `muzigal_prod`.`batch_summary_pr`('{(batch_start_date)}','{(batch_end_date)}');"""
             
             average_report = """SELECT 
                                 SUM(net_amount),
@@ -179,5 +179,6 @@ elif select == 'Batch Settlement':
             show_report = pd.read_sql_query(average_report,connection)
             
             st.table(show_report)
+            
         else:
                 st.write("Enter Values")
