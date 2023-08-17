@@ -55,9 +55,9 @@ elif select == 'Custom':
         
         if id is not None:
             
-            if classes is not None:
+            if classes is not None and amount is None:
                 query = f"UPDATE muzigal_prod.orders SET  session_qty = {classes} WHERE id = {id};"
-            elif amount is not None:
+            elif amount is not None and classes is N:
                 query = f"UPDATE muzigal_prod.orders SET  amount = {amount} WHERE id = {id};"
             elif classes and amount is not None:
                 query = f"UPDATE muzigal_prod.orders SET  session_qty = {classes},amount = {amount}  WHERE id = {id};"
