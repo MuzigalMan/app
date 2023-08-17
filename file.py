@@ -47,7 +47,7 @@ elif select == 'Custom':
     
     classes = st.text_input("Classes")
     
-    amount = st.text_input("Amount")
+    amount = st.number_input("Amount")
     
     submited = st.button("Make Changes")
     
