@@ -19,9 +19,9 @@ select = st.selectbox('What would you like to perform?',
 
 if select == 'Add Classes':
     
-    id = st.text_input("Order ID")
+    id = st.text_input("Order ID*")
     
-    payment_id = st.text_input("Payment Id")
+    payment_id = st.text_input("Payment Id*")
     
     submited =  st.button("Make Changes")
         
@@ -43,17 +43,24 @@ if select == 'Add Classes':
                 
 elif select == 'Custom':
     
-    id = st.text_input("Order Id")
+    id = st.text_input("Order Id*")
     
     classes = st.text_input("Classes")
+    
+    amount = st.text_input("Amount")
     
     submited = st.button("Make Changes")
     
     if submited:
         
-        if id and classes is not None:
+        if id is not None:
             
-            query = f"UPDATE muzigal_prod.orders SET  session_qty = {classes} WHERE id = {id};"
+            if classes is not None:
+                query = f"UPDATE muzigal_prod.orders SET  session_qty = {classes} WHERE id = {id};"
+            elif amount is not None:
+                query = f"UPDATE muzigal_prod.orders SET  amount = {amount} WHERE id = {id};"
+            elif classes and amount is not None:
+                query = f"UPDATE muzigal_prod.orders SET  session_qty = {classes},amount = {amount}  WHERE id = {id};"
             
             try:
                 connection.execute(query)
@@ -67,9 +74,9 @@ elif select == 'Custom':
     
 elif select == 'Refund':
     
-    id = st.text_input("Order ID")
+    id = st.text_input("Order ID*")
         
-    refund_amount = st.number_input("Refund Amount")
+    refund_amount = st.number_input("Refund Amount*")
     refund_amount = int(refund_amount)
     
     notes = st.text_input("Note")
