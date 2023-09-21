@@ -9,6 +9,9 @@ try:
     connection = create_engine(
         "mysql+pymysql://doadmin:jujcgqi2qtufrq3z@muzigal-prod-do-user-7549922-0.a.db.ondigitalocean.com:25060/muzigal_prod"
     )
+    # connection = create_engine(
+    #     "mysql+pymysql://doadmin:z1uhlsyqhmcxpnsc@mz-db-dev-do-user-7549922-0.b.db.ondigitalocean.com:25060/muzigal_prod"
+    # )
 except Exception as e:
     print("error has occured")
 
@@ -143,22 +146,17 @@ elif select == 'Batch Settlement':
             ab_ids = get_ids(add_back_file)
             
             class_mark_completion = f"""SET SQL_SAFE_UPDATES = 0;
-                                        update class_schedule
-                                        SET is_complete=1
-                                        WHERE id IN {mc_ids};
+                                        UPDATE class_schedule SET is_complete=1 WHERE id IN {mc_ids}; 
                                         SET SQL_SAFE_UPDATES = 1;
                                         """
                                         
             log_classes_before_deletion = f"""INSERT INTO slot_cancel_log(slot_id,slot_type,student_id,class_id,order_id,reason,created_date)
                                                 SELECT slot_id,1,student_id,id,order_id,'System mark completion with Auto process',NOW() FROM class_schedule
-                                                WHERE id IN {ab_ids};
-                                                """
+                                                WHERE id IN {ab_ids};"""
                                                 
-            delete_incomplete_classes = f"""DELETE FROM class_schedule
-                                            WHERE id IN {ab_ids};
-                                            """
+            delete_incomplete_classes = f"""DELETE FROM class_schedule WHERE id IN {ab_ids};"""
                                             
-            create_batch = f"""CALL `muzigal_prod`.`batch_summary_pr`('{(batch_start_date)}','{(batch_end_date)}');"""
+            create_batch = f"""CALL `muzigal_prod`.`batch_summary_pr`('{batch_start_date}','{batch_end_date}');"""
             
             average_report = """SELECT 
                                 SUM(net_amount),
@@ -177,9 +175,10 @@ elif select == 'Batch Settlement':
             
             for i in range(len(queries)):
                 try:
-                    connection.execute(queries[i])
+                    # connection.execute(queries[i])
+                    st.markdown(queries[i])
                 except Exception as e:
-                    print(f"Error has occured:{e}")
+                    st.markdown(f"Error has occured:{e}")
 
             st.markdown(f"Batch Created")
                     
@@ -188,4 +187,4 @@ elif select == 'Batch Settlement':
             st.table(show_report)
             
         else:
-                st.write("Enter Values")
+            st.write("Enter Values")
