@@ -8,6 +8,7 @@ from functions import get_ids
 try:
     connection = create_engine(
         "mysql+pymysql://doadmin:jujcgqi2qtufrq3z@muzigal-prod-do-user-7549922-0.a.db.ondigitalocean.com:25060/muzigal_prod"
+        #"mysql+pymysql://doadmin:z1uhlsyqhmcxpnsc@mz-db-dev-do-user-7549922-0.b.db.ondigitalocean.com:25060/muzigal_prod"
     )
     # connection = create_engine(
     #     "mysql+pymysql://doadmin:z1uhlsyqhmcxpnsc@mz-db-dev-do-user-7549922-0.b.db.ondigitalocean.com:25060/muzigal_prod"
@@ -171,12 +172,12 @@ elif select == 'Batch Settlement':
                             WHERE batch_id = (select batch_id from batch_transactions order by id desc limit 1) AND b.zone_id = 1 AND net_amount != 0;
                             """
                             
-            queries = [class_mark_completion,log_classes_before_deletion,delete_incomplete_classes,create_batch]
+            queries = [class_mark_completion,log_classes_before_deletion,delete_incomplete_classes]
             
             for i in range(len(queries)):
                 try:
-                    # connection.execute(queries[i])
-                    st.markdown(queries[i])
+                    connection.execute(queries[i])
+                    # st.markdown(queries[i])
                 except Exception as e:
                     st.markdown(f"Error has occured:{e}")
 
