@@ -7,7 +7,7 @@ from functions import get_ids
 
 try:
     connection = create_engine(
-        "mysql+pymysql://doadmin:jujcgqi2qtufrq3z@muzigal-prod-do-user-7549922-0.a.db.ondigitalocean.com:25060/muzigal_prod"
+        "mysql+pymysql://doadmin:jujcgqi2qtufrq3z@muzigal-prod-report-do-user-7549922-0.b.db.ondigitalocean.com:25060/muzigal_prod"
         # "mysql+pymysql://doadmin:z1uhlsyqhmcxpnsc@mz-db-dev-do-user-7549922-0.b.db.ondigitalocean.com:25060/muzigal_prod"
     )
     # connection = create_engine(
