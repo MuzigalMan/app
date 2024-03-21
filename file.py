@@ -172,7 +172,7 @@ elif select == 'Batch Settlement':
                             WHERE batch_id = (select batch_id from batch_transactions order by id desc limit 1) AND b.zone_id = 1 AND net_amount != 0;
                             """
                             
-            queries = [class_mark_completion,log_classes_before_deletion,delete_incomplete_classes]
+            queries = [class_mark_completion,log_classes_before_deletion,delete_incomplete_classes,create_batch]
             
             for i in range(len(queries)):
                 try:
