@@ -176,8 +176,8 @@ elif select == 'Batch Settlement':
             
             for i in range(len(queries)):
                 try:
-                    connection.execute(queries[i])
-                    # st.markdown(queries[i])
+                    # connection.execute(queries[i])
+                    st.markdown(queries[i])
                 except Exception as e:
                     st.markdown(f"Error has occured:{e}")
 
